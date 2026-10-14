@@ -25,15 +25,21 @@
   white-space: nowrap;
   text-decoration: none;
 }
-.igg-chip-overlay {
+.igg-chips { display: inline-flex; gap: 4px; }
+.igg-chips-overlay {
   position: absolute;
   top: 4px;
   left: 4px;
   z-index: 5;
+  flex-direction: column;
+  align-items: flex-start;
 }
-.igg-chip-inline {
+.igg-chips-inline {
   margin-left: 6px;
   vertical-align: middle;
+}
+.igg-chip.igg-pioneer {
+  background: linear-gradient(135deg, #0f8a83, #0b5f73);
 }
 
 .igg-tier-common { --igg-tier: var(--igg-common); }
@@ -57,7 +63,7 @@
   font-size: 13px;
   color: inherit;
 }
-.igg-banner .igg-chip-inline { margin-left: 0; }
+.igg-banner .igg-chips-inline { margin-left: 0; }
 .igg-banner-text { opacity: 0.85; }
 
 .igg-tooltip {

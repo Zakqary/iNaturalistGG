@@ -8,9 +8,12 @@
   --accent: #74ac00; /* iNaturalist green */
   --accent-fg: #ffffff;
   --error: #c62828;
-  --gold: #d9a400;
+  --gold: #e6b800;
   --silver: #9aa4ad;
   --bronze: #b8733a;
+  --medal-gold-bg: linear-gradient(180deg, #fff4a3, #ffd630 55%, #f0c010);
+  --medal-silver-bg: linear-gradient(180deg, #f4f7f9, #b7c1ca);
+  --medal-bronze-bg: linear-gradient(180deg, #f2b98a, #c27a3e);
   --igg-common: #8a949e;
   --igg-uncommon: #2fa84f;
   --igg-rare: #2f7de1;

@@ -9,7 +9,12 @@
   <body>
     <header class="topbar">
       <span class="logo">iNaturalist<b>GG</b></span>
-      <div class="topbar-right">
+      <nav class="tabs" aria-label="Sections">
+        <a href="#stats" data-tab-link="stats">Stats</a>
+        <a href="#needs" data-tab-link="needs">Needs</a>
+        <a href="#lifelist" data-tab-link="lifelist">Life list</a>
+      </nav>
+      <div class="topbar-right" data-tab="stats">
         <span id="updated" class="muted"></span>
         <button id="refresh" class="secondary">Refresh ranks</button>
       </div>
@@ -31,30 +36,95 @@
 
       <p id="message" class="message" hidden></p>
 
-      <section>
-        <h2>Leaderboards</h2>
-        <p class="muted section-note">
-          Your rank in the county, state, country and continent where you've made the most observations, and worldwide.
-          iNaturalist only reports the top 500 people on any leaderboard.
-        </p>
-        <div id="scopes" class="scopes"></div>
-      </section>
+      <div data-tab="stats">
+        <section>
+          <h2>Leaderboards</h2>
+          <p class="muted section-note">
+            Your rank in the district (county, municipality…), territory (state, province…), country and continent where you've made the most
+            observations, and worldwide. iNaturalist only reports the top 500 people on any leaderboard.
+          </p>
+          <div id="scopes" class="scopes"></div>
+        </section>
 
-      <section>
-        <h2>Lifers by tier</h2>
-        <div id="tiers" class="tiers"></div>
-      </section>
-
-      <section>
-        <div class="section-head">
-          <h2>Share card</h2>
-          <div class="actions">
-            <button id="copy-png" class="secondary">Copy image</button>
-            <button id="download-png">Download PNG</button>
+        <section>
+          <div class="section-head">
+            <h2>Badges</h2>
+            <button id="check-badges" class="secondary">Check now</button>
           </div>
-        </div>
-        <div id="card-frame" class="card-frame"><div id="card" class="card"></div></div>
-      </section>
+          <p class="muted section-note">
+            Earned for being in the worldwide, all-time top 3 by species or by observations for any order or larger
+            group (superorder, class, phylum, kingdom…). <span id="badge-status"></span>
+          </p>
+          <progress id="badge-progress" hidden></progress>
+          <div id="badges" class="badges"></div>
+          <details id="former-badges" class="former" hidden>
+            <summary>Former badges (<span id="former-count"></span>)</summary>
+            <ul id="former-list"></ul>
+          </details>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Pioneers</h2>
+            <button id="check-pioneers" class="secondary">Check more now</button>
+          </div>
+          <p class="muted section-note">
+            Observations that were the first iNaturalist record of a species in their district, territory or country.
+            Checked in batches of about 1,000 species after each sync. <span id="pioneer-status"></span>
+          </p>
+          <progress id="pioneer-progress" hidden></progress>
+          <div id="pioneer-counts" class="pioneer-counts"></div>
+          <ol id="pioneer-list" class="pioneer-list"></ol>
+        </section>
+
+        <section>
+          <h2>Lifers by tier</h2>
+          <div id="tiers" class="tiers"></div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Share card</h2>
+            <div class="actions">
+              <button id="copy-png" class="secondary">Copy image</button>
+              <button id="download-png">Download PNG</button>
+            </div>
+          </div>
+          <div id="card-frame" class="card-frame"><div id="card" class="card"></div></div>
+        </section>
+      </div>
+
+      <div data-tab="needs" hidden>
+        <section>
+          <h2>Needs</h2>
+          <p class="muted section-note">
+            Species recorded in a place that you've never observed anywhere, most-recorded first: the easiest lifers
+            near you.
+          </p>
+          <div class="filters">
+            <label>Place <select id="needs-place"></select></label>
+            <label class="check"><input type="checkbox" id="needs-season" /> In season now</label>
+          </div>
+          <div id="needs-groups" class="chips" role="group" aria-label="Group"></div>
+          <p id="needs-summary" class="muted"></p>
+          <ol id="needs-list" class="needs"></ol>
+          <button id="needs-more" class="secondary" hidden>Load more</button>
+        </section>
+      </div>
+
+      <div data-tab="lifelist" hidden>
+        <section>
+          <h2>Life list</h2>
+          <p class="muted section-note">
+            Everything you've observed, from kingdoms down to families, with how many of the species recorded in the
+            place you've seen. Expand a group to see what's inside.
+          </p>
+          <div class="filters">
+            <label>Place <select id="tree-place"></select></label>
+          </div>
+          <div id="tree" class="tree" role="tree"></div>
+        </section>
+      </div>
     </main>
 
     <script type="module" src="./main.ts"></script>

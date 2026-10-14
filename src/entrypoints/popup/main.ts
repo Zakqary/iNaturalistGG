@@ -29,6 +29,7 @@ async function renderSummary(): Promise<void> {
   const summary = await send('getSummary', {});
   $('lifer-count').textContent = fmt(summary.lifers);
   $('obs-count').textContent = fmt(summary.observations);
+  $('badge-count').textContent = fmt(summary.badges);
   const tiers = $('tiers');
   tiers.replaceChildren(
     ...TIERS.filter((t) => summary.byTier[t.label]).map((t) => {

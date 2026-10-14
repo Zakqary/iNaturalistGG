@@ -9,19 +9,32 @@ Species · Genus · Family · Order · Class · Phylum+
 Hover a chip to see every group it unlocked. Observation pages also get a banner.
 
 **Stats page:** open it from the popup. It shows:
-- Your rank by species and by observations in your most-observed county, state, country and continent, and worldwide
+- Your rank by species and by observations in your most-observed district (county, municipality…), territory (state, province…), country and continent, and worldwide
 - Lifers broken down by tier
 - A 1200×630 share card you can download or copy as a PNG
 
 Two limits come from iNaturalist:
-- Leaderboards stop at 500, so ranks beyond that show as "500+".
+- Leaderboards stop at 500, so ranks beyond that show as "Unranked".
 - The worldwide species leaderboard times out on iNat's side, so the worldwide species rank is estimated (≈) from the top 500 observers' profile species totals.
 
-**Planned:**
-- Worldwide top-3 badges for orders and above
-- Needs list
-- Completion bars
-- First-for-place ("Pioneer") detection
+**Badges:** you earn one for being in the worldwide, all-time top 3, by species or by observations, for any group ranked order or higher.
+- Checked automatically once a week after a sync, or on demand. Each check fetches just the top 3 for every such group you've observed.
+- Badges you lose stay in your history as former badges.
+- They appear on the stats page, the share card and in the popup.
+
+**Needs tab:** species recorded in one of your home places that you've never observed.
+- Most-recorded species come first.
+- Filters for group and for "in season now".
+
+**Life list tab:** your observed taxonomy from kingdom down to family.
+- Each group has a completion bar: species you've seen there out of species recorded in the place.
+- Totals load as you expand a group and are cached for 30 days.
+
+**Pioneers:** observations that were the first iNaturalist record of a species in their district, territory or country.
+- **Which observation:** your earliest non-casual observation of each species.
+- **How:** checked district first, then territory, then country, stopping at the first place where an earlier record exists.
+- **Batches:** about 1,000 species after each sync, newest first. Titles are re-confirmed monthly.
+- **Where they show:** pioneer observations get a teal PIONEER chip on iNat pages, plus a list and counts on the stats page.
 
 ## Development
 
@@ -29,7 +42,7 @@ Two limits come from iNaturalist:
 npm install
 npm run dev      # opens Chrome with the extension loaded and hot reload
 npm run build    # production build in .output/chrome-mv3
-npm test         # unit tests (lifer logic)
+npm test         # unit tests
 npm run compile  # type-check
 ```
 

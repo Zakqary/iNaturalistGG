@@ -32,7 +32,7 @@ input {
 .profile img { width: 40px; height: 40px; border-radius: 50%; background: var(--border); }
 #display-name { font-weight: 700; }
 
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 8px; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 8px; }
 .stat { border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; }
 .stat span { display: block; font-size: 20px; font-weight: 800; }
 .stat small { color: var(--muted); }

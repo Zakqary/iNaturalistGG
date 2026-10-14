@@ -6,6 +6,7 @@ import { DETAIL_BANNER_AFTER_SELECTORS, isThumbnailLink, obsIdFromHref, OBS_PATH
 import './style.css';
 
 const SCAN_DEBOUNCE_MS = 250;
+const PIONEER_LABELS = { district: 'District', territory: 'Territory', country: 'Country' } as const;
 const LOOKUP_CHUNK = 100;
 const MAX_MINOR_TAXA_SHOWN = 4;
 
@@ -65,16 +66,16 @@ export default defineContentScript({
       const thumbs = anchors.filter(isThumbnailLink);
       if (thumbs.length) {
         for (const a of thumbs) {
-          if (a.querySelector(':scope > .igg-chip')) continue;
+          if (a.querySelector(':scope > .igg-chips')) continue;
           if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
-          a.append(makeChip(info, 'overlay'));
+          a.append(makeChips(info, 'overlay'));
         }
         return;
       }
       // Text-only views (e.g. list/table): one inline chip after the first link.
       const first = anchors[0];
-      if (first.nextElementSibling?.classList.contains('igg-chip')) return;
-      first.after(makeChip(info, 'inline'));
+      if (first.nextElementSibling?.classList.contains('igg-chips')) return;
+      first.after(makeChips(info, 'inline'));
     }
 
     function renderDetailBanner(info: LiferInfo | null): void {
@@ -88,32 +89,54 @@ export default defineContentScript({
       const banner = document.createElement('div');
       banner.className = 'igg-root igg-banner';
       banner.dataset.obsId = String(info.obsId);
-      banner.append(makeChip(info, 'inline'));
+      banner.append(makeChips(info, 'inline'));
+      const parts: string[] = [];
+      const firsts = info.taxa.filter((t) => MAJOR_RANK_LEVELS.has(t.rankLevel));
+      if (firsts.length) parts.push(`First ${firsts.map((t) => `${t.rank} ${t.name}`).join(' · ')}`);
+      if (info.pioneer) parts.push(`First iNat record of this species in ${info.pioneer.placeName}`);
       const text = document.createElement('span');
       text.className = 'igg-banner-text';
-      text.textContent = `First ${info.taxa
-        .filter((t) => MAJOR_RANK_LEVELS.has(t.rankLevel))
-        .map((t) => `${t.rank} ${t.name}`)
-        .join(' · ')}`;
+      text.textContent = parts.join(' — ');
       banner.append(text);
       anchor.after(banner);
     }
 
-    function makeChip(info: LiferInfo, mode: 'overlay' | 'inline'): HTMLElement {
-      const tier = tierFor(info.topRankLevel);
-      const chip = document.createElement('span');
-      chip.className = `igg-root igg-chip igg-chip-${mode} ${tier.className}`;
-      chip.textContent = info.topRankLevel >= 20 ? `LIFER · ${tier.label}` : 'LIFER';
-      chip.addEventListener('mouseenter', () => tooltip.show(chip, info));
-      chip.addEventListener('mouseleave', () => tooltip.hide());
-      return chip;
+    /** The LIFER chip and/or PIONEER chip for an observation, stacked together. */
+    function makeChips(info: LiferInfo, mode: 'overlay' | 'inline'): HTMLElement {
+      const group = document.createElement('span');
+      group.className = `igg-root igg-chips igg-chips-${mode}`;
+
+      if (info.taxa.length) {
+        const tier = tierFor(info.topRankLevel);
+        const chip = document.createElement('span');
+        chip.className = `igg-chip ${tier.className}`;
+        chip.textContent = info.topRankLevel >= 20 ? `LIFER · ${tier.label}` : 'LIFER';
+        chip.addEventListener('mouseenter', () => tooltip.show(chip, info));
+        chip.addEventListener('mouseleave', () => tooltip.hide());
+        group.append(chip);
+      }
+      if (info.pioneer) {
+        const { level, placeName } = info.pioneer;
+        const chip = document.createElement('span');
+        chip.className = 'igg-chip igg-pioneer';
+        chip.textContent = `PIONEER · ${PIONEER_LABELS[level]}`;
+        chip.addEventListener('mouseenter', () =>
+          tooltip.showText(chip, 'Pioneer', `The first iNaturalist record of this species in ${placeName}.`),
+        );
+        chip.addEventListener('mouseleave', () => tooltip.hide());
+        group.append(chip);
+      }
+      return group;
     }
 
-    // Forget "not a lifer" answers once a sync finishes, so newly synced observations get chips.
+    // Forget cached answers once a sync or pioneer check finishes, so new results show up.
     const onStorage = (changes: Record<string, { newValue?: unknown }>) => {
       const status = changes.syncStatus?.newValue as { phase?: string } | undefined;
-      if (status?.phase === 'idle') {
+      const pioneers = changes.pioneerStatus?.newValue as { running?: boolean } | undefined;
+      if (status?.phase === 'idle' || pioneers?.running === false) {
         cache.clear();
+        // Redraw so existing chips pick up new results (e.g. a lifer that's now also a pioneer).
+        document.querySelectorAll('.igg-chips, .igg-banner').forEach((node) => node.remove());
         schedule();
       }
     };
@@ -141,7 +164,26 @@ function createTooltip() {
   el.hidden = true;
   document.body.append(el);
 
+  function place(anchor: HTMLElement) {
+    el.hidden = false;
+    const r = anchor.getBoundingClientRect();
+    const tip = el.getBoundingClientRect();
+    const left = Math.min(Math.max(8, r.left), window.innerWidth - tip.width - 8);
+    const top = r.bottom + tip.height + 6 > window.innerHeight ? r.top - tip.height - 6 : r.bottom + 6;
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+  }
+
   return {
+    showText(anchor: HTMLElement, heading: string, body: string) {
+      const h = document.createElement('div');
+      h.className = 'igg-tooltip-heading';
+      h.textContent = heading;
+      const p = document.createElement('div');
+      p.textContent = body;
+      el.replaceChildren(h, p);
+      place(anchor);
+    },
     show(anchor: HTMLElement, info: LiferInfo) {
       el.replaceChildren();
       const heading = document.createElement('div');
@@ -170,13 +212,7 @@ function createTooltip() {
         el.append(more);
       }
 
-      el.hidden = false;
-      const r = anchor.getBoundingClientRect();
-      const tip = el.getBoundingClientRect();
-      const left = Math.min(Math.max(8, r.left), window.innerWidth - tip.width - 8);
-      const top = r.bottom + tip.height + 6 > window.innerHeight ? r.top - tip.height - 6 : r.bottom + 6;
-      el.style.left = `${left}px`;
-      el.style.top = `${top}px`;
+      place(anchor);
     },
     hide() {
       el.hidden = true;

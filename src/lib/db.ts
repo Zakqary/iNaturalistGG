@@ -1,5 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { LiferRecord, Obs, Place, StatsSnapshot, Taxon, UserMeta } from './types';
+import type { Badge, LiferRecord, Obs, Pioneer, Place, StatsSnapshot, Taxon, UserMeta } from './types';
 
 interface GGSchema extends DBSchema {
   observations: { key: number; value: Obs; indexes: { byUser: number } };
@@ -8,13 +8,17 @@ interface GGSchema extends DBSchema {
   users: { key: number; value: UserMeta };
   places: { key: number; value: Place };
   stats: { key: number; value: StatsSnapshot };
+  badges: { key: string; value: Badge; indexes: { byUser: number } };
+  /** Species totals per group per place, keyed placeId:taxonId. */
+  completion: { key: string; value: { key: string; total: number; fetchedAt: string } };
+  pioneers: { key: string; value: Pioneer; indexes: { byUser: number; byObs: number } };
 }
 
 let dbPromise: Promise<IDBPDatabase<GGSchema>> | null = null;
 
 export function db(): Promise<IDBPDatabase<GGSchema>> {
-  dbPromise ??= openDB<GGSchema>('inaturalistgg', 2, {
-    upgrade(d, oldVersion) {
+  dbPromise ??= openDB<GGSchema>('inaturalistgg', 6, {
+    async upgrade(d, oldVersion, _newVersion, tx) {
       if (oldVersion < 1) {
         d.createObjectStore('observations', { keyPath: 'id' }).createIndex('byUser', 'userId');
         d.createObjectStore('lifers', { keyPath: 'obsId' }).createIndex('byUser', 'userId');
@@ -24,6 +28,23 @@ export function db(): Promise<IDBPDatabase<GGSchema>> {
       if (oldVersion < 2) {
         d.createObjectStore('places', { keyPath: 'id' });
         d.createObjectStore('stats', { keyPath: 'userId' });
+      }
+      if (oldVersion < 3) {
+        d.createObjectStore('badges', { keyPath: 'key' }).createIndex('byUser', 'userId');
+      }
+      if (oldVersion < 4) {
+        d.createObjectStore('completion', { keyPath: 'key' });
+      }
+      if (oldVersion < 5) {
+        const pioneers = d.createObjectStore('pioneers', { keyPath: 'key' });
+        pioneers.createIndex('byUser', 'userId');
+        pioneers.createIndex('byObs', 'obsId');
+      }
+      if (oldVersion === 5) {
+        // "county" was renamed "district" (it isn't a county outside the US).
+        for await (const cursor of tx.objectStore('pioneers').iterate()) {
+          if ((cursor.value.level as string) === 'county') await cursor.update({ ...cursor.value, level: 'district' });
+        }
       }
     },
   });

@@ -3,11 +3,12 @@ import { db, putMany, userObservations } from './db';
 import type { Obs, Place, ScopeKey, ScopeStats, StatsSnapshot, UserMeta } from './types';
 
 /**
- * Admin levels of the places we rank you in, smallest first. "Territory" is
- * iNat's admin level 10: states in the US, provinces, regions etc. elsewhere.
+ * Admin levels of the places we rank you in, smallest first. Names are
+ * country-neutral: "district" is iNat's level 20 (US counties, municipalities,
+ * départements…) and "territory" is level 10 (US states, provinces, regions…).
  */
 export const PLACE_SCOPES: { scope: ScopeKey; adminLevel: number; label: string }[] = [
-  { scope: 'county', adminLevel: 20, label: 'County' },
+  { scope: 'district', adminLevel: 20, label: 'District' },
   { scope: 'territory', adminLevel: 10, label: 'Territory' },
   { scope: 'country', adminLevel: 0, label: 'Country' },
   { scope: 'continent', adminLevel: -10, label: 'Continent' },
@@ -21,7 +22,7 @@ export const SCOPE_LABELS: Record<ScopeKey, string> = {
 export const LEADERBOARD_LIMIT = 500;
 export const STATS_MAX_AGE_MS = 24 * 3600 * 1000;
 /** Bump when StatsSnapshot's shape changes so cached snapshots get recomputed. */
-export const STATS_VERSION = 2;
+export const STATS_VERSION = 3;
 const PLACES_BATCH = 30;
 const MAX_PLACE_BATCHES = 10;
 
@@ -74,7 +75,7 @@ export function competitionRank(
 }
 
 /** Places by id, from the local cache where possible (fetched in batches otherwise). */
-async function getPlaces(ids: number[]): Promise<Map<number, Place>> {
+export async function getPlaces(ids: number[]): Promise<Map<number, Place>> {
   const d = await db();
   const out = new Map<number, Place>();
   const missing: number[] = [];
@@ -187,7 +188,7 @@ export async function computeStats(user: UserMeta): Promise<StatsSnapshot> {
   for (const { scope } of PLACE_SCOPES) {
     const place = homes[scope];
     if (!place) continue;
-    const parent = scope === 'county' ? await territoryOf(place) : undefined;
+    const parent = scope === 'district' ? await territoryOf(place) : undefined;
     scopes.push(await scopeStats(user, scope, place, parent));
   }
   scopes.push(await scopeStats(user, 'world', null));
