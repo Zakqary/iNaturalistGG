@@ -1,6 +1,6 @@
 # iNaturalistGG
 
-A Chrome extension that gamifies [iNaturalist](https://www.inaturalist.org).
+A Chrome and Firefox extension that gamifies [iNaturalist](https://www.inaturalist.org).
 
 **Current (MVP):** "LIFER" chips on your observations, marking the first time you observed any group at species rank or above. Chips are colour-coded by the highest new rank:
 
@@ -40,10 +40,13 @@ Two limits come from iNaturalist:
 
 ```sh
 npm install
-npm run dev      # opens Chrome with the extension loaded and hot reload
-npm run build    # production build in .output/chrome-mv3
-npm test         # unit tests
-npm run compile  # type-check
+npm run dev            # Chrome with the extension loaded and hot reload
+npm run dev:firefox    # same, in Firefox
+npm run build          # production build in .output/chrome-mv3
+npm run build:firefox  # production build in .output/firefox-mv2
+npm run zip            # store packages (zip:firefox also makes the sources zip AMO asks for)
+npm test               # unit tests
+npm run compile        # type-check
 ```
 
 To load a production build manually:
@@ -61,3 +64,5 @@ To load a production build manually:
 - **`src/lib/api.ts`** sends every API request through one queue, at most about 1 per second, with backoff on 429 responses.
 - **`src/entrypoints/content/`** decorates iNaturalist pages. All site-specific selectors are in `selectors.ts`.
 - Data is stored in IndexedDB, in the extension's own storage.
+
+See [PUBLISHING.md](PUBLISHING.md) for releasing to the Chrome Web Store and Firefox Add-ons, and [PRIVACY.md](PRIVACY.md) for the privacy policy.
