@@ -1,26 +1,4 @@
-:root {
-  --bg: #ffffff;
-  --fg: #1d2125;
-  --muted: #6b7680;
-  --border: #dde2e6;
-  --accent: #74ac00; /* iNaturalist green */
-  --accent-fg: #ffffff;
-  --error: #c62828;
-  --igg-common: #8a949e;
-  --igg-uncommon: #2fa84f;
-  --igg-rare: #2f7de1;
-  --igg-epic: #9b4de0;
-  --igg-epic-plus: #e07a1f;
-  --igg-legendary: #d9a400;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1b1f23;
-    --fg: #eef1f3;
-    --muted: #98a3ad;
-    --border: #2f363d;
-  }
-}
+@import '../../styles/theme.css';
 
 * { box-sizing: border-box; }
 body {
@@ -47,21 +25,7 @@ input {
   color: inherit;
   font: inherit;
 }
-button {
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 6px;
-  background: var(--accent);
-  color: var(--accent-fg);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
-button:disabled { opacity: 0.5; cursor: default; }
-
-.muted { color: var(--muted); }
-.error { color: var(--error); margin: 6px 0 0; }
+.error { margin: 6px 0 0; }
 
 #user-section { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
 .profile { display: flex; gap: 10px; align-items: center; }
@@ -82,11 +46,5 @@ button:disabled { opacity: 0.5; cursor: default; }
   font-weight: 700;
   background: var(--igg-tier);
 }
-.igg-tier-common { --igg-tier: var(--igg-common); }
-.igg-tier-uncommon { --igg-tier: var(--igg-uncommon); }
-.igg-tier-rare { --igg-tier: var(--igg-rare); }
-.igg-tier-epic { --igg-tier: var(--igg-epic); }
-.igg-tier-epic-plus { --igg-tier: var(--igg-epic-plus); }
-.igg-tier-legendary { --igg-tier: var(--igg-legendary); }
-
 progress { width: 100%; margin: 6px 0; }
+button.wide { width: 100%; margin-top: 10px; }

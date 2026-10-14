@@ -4,8 +4,9 @@ import { apiGet, type Page } from '../lib/api';
 import { db } from '../lib/db';
 import type { LiferInfo, Message, MessageMap, MessageType } from '../lib/messages';
 import { tierFor } from '../lib/ranks';
+import { computeStats, STATS_MAX_AGE_MS, STATS_VERSION } from '../lib/stats';
 import { lookupUser, resumeInterruptedSync, sync } from '../lib/sync';
-import type { Taxon, UserMeta } from '../lib/types';
+import type { StatsSnapshot, Taxon, UserMeta } from '../lib/types';
 
 const SYNC_ALARM = 'igg-sync';
 const SYNC_PERIOD_MINUTES = 6 * 60;
@@ -94,7 +95,24 @@ const handlers: { [T in MessageType]: (req: MessageMap[T]['req']) => Promise<Mes
     }
     return { observations, lifers: lifers.length, byTier };
   },
+
+  async getStats({ refresh, cachedOnly }) {
+    const user = await currentUser();
+    if (!user) throw new Error('Set your iNaturalist username first.');
+    const cached = await (await db()).get('stats', user.id);
+    const current = cached?.version === STATS_VERSION ? cached : undefined;
+    const fresh = current && Date.now() - Date.parse(current.computedAt) < STATS_MAX_AGE_MS;
+    if (cachedOnly || (fresh && !refresh)) return current ?? null;
+    if (!user.lastSyncCompletedAt) throw new Error('Your first sync is still running; ranks need your observations.');
+    // Refresh profile totals first; they're the worldwide fallback when you're outside the top 500.
+    statsJob ??= lookupUser(user.login)
+      .then(computeStats)
+      .finally(() => (statsJob = null));
+    return statsJob;
+  },
 };
+
+let statsJob: Promise<StatsSnapshot> | null = null;
 
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener((msg: Message, _sender, sendResponse) => {

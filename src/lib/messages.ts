@@ -1,5 +1,5 @@
 import { browser } from 'wxt/browser';
-import type { UserMeta } from './types';
+import type { StatsSnapshot, UserMeta } from './types';
 
 export interface LiferTaxon {
   id: number;
@@ -22,6 +22,8 @@ export interface MessageMap {
   getUser: { req: Record<string, never>; res: UserMeta | null };
   sync: { req: { full?: boolean }; res: { started: boolean } };
   getSummary: { req: Record<string, never>; res: { observations: number; lifers: number; byTier: Record<string, number> } };
+  /** Cached ranks if fresh (or `cachedOnly`), otherwise recomputes them (~10–30 s). */
+  getStats: { req: { refresh?: boolean; cachedOnly?: boolean }; res: StatsSnapshot | null };
 }
 
 export type MessageType = keyof MessageMap;

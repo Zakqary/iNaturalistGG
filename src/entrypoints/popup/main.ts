@@ -85,6 +85,7 @@ form.addEventListener('submit', async (e) => {
 
 syncBtn.addEventListener('click', () => void send('sync', {}));
 fullSyncBtn.addEventListener('click', () => void send('sync', { full: true }));
+$('open-stats').addEventListener('click', () => void browser.tabs.create({ url: browser.runtime.getURL('/stats.html') }));
 
 browser.storage.onChanged.addListener((changes) => {
   if (changes.syncStatus) void refresh();

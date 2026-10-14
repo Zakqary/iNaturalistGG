@@ -7,6 +7,11 @@ export default defineConfig({
     name: 'iNaturalistGG',
     description: 'Gamify iNaturalist: lifers, leaderboard ranks, badges and more.',
     permissions: ['storage', 'alarms', 'unlimitedStorage'],
-    host_permissions: ['https://api.inaturalist.org/*'],
+    // Avatars are fetched so the share card can be exported as a PNG.
+    host_permissions: [
+      'https://api.inaturalist.org/*',
+      'https://static.inaturalist.org/*',
+      'https://inaturalist-open-data.s3.amazonaws.com/*',
+    ],
   },
 });

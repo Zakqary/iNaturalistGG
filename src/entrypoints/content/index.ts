@@ -2,7 +2,7 @@ import { browser } from 'wxt/browser';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { send, type LiferInfo, type LiferTaxon } from '../../lib/messages';
 import { capitalize, MAJOR_RANK_LEVELS, tierFor } from '../../lib/ranks';
-import { DETAIL_TITLE_SELECTORS, isThumbnailLink, obsIdFromHref, OBS_PATH_RE } from './selectors';
+import { DETAIL_BANNER_AFTER_SELECTORS, isThumbnailLink, obsIdFromHref, OBS_PATH_RE } from './selectors';
 import './style.css';
 
 const SCAN_DEBOUNCE_MS = 250;
@@ -82,7 +82,9 @@ export default defineContentScript({
       if (existing && (!info || existing.dataset.obsId !== String(info.obsId))) existing.remove();
       if (!info || document.querySelector('.igg-banner')) return;
 
-      const title = DETAIL_TITLE_SELECTORS.map((s) => document.querySelector(s)).find((el) => !!el);
+      // iNat renders the page after load; if the title isn't there yet, the next scan will retry.
+      const anchor = DETAIL_BANNER_AFTER_SELECTORS.map((s) => document.querySelector(s)).find((el) => !!el);
+      if (!anchor) return;
       const banner = document.createElement('div');
       banner.className = 'igg-root igg-banner';
       banner.dataset.obsId = String(info.obsId);
@@ -94,11 +96,7 @@ export default defineContentScript({
         .map((t) => `${t.rank} ${t.name}`)
         .join(' · ')}`;
       banner.append(text);
-      if (title) title.after(banner);
-      else {
-        banner.classList.add('igg-banner-floating');
-        document.body.append(banner);
-      }
+      anchor.after(banner);
     }
 
     function makeChip(info: LiferInfo, mode: 'overlay' | 'inline'): HTMLElement {

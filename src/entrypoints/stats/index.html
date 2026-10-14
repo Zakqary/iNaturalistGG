@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iNaturalistGG Stats</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="logo">iNaturalist<b>GG</b></span>
+      <div class="topbar-right">
+        <span id="updated" class="muted"></span>
+        <button id="refresh" class="secondary">Refresh ranks</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="profile" id="profile" hidden>
+        <img id="avatar" alt="" />
+        <div>
+          <h1 id="display-name"></h1>
+          <a id="profile-link" target="_blank" rel="noopener"></a>
+        </div>
+        <div class="totals">
+          <div><span id="total-obs">–</span><small>observations</small></div>
+          <div><span id="total-species">–</span><small>species</small></div>
+          <div><span id="total-lifers">–</span><small>lifers</small></div>
+        </div>
+      </section>
+
+      <p id="message" class="message" hidden></p>
+
+      <section>
+        <h2>Leaderboards</h2>
+        <p class="muted section-note">
+          Your rank in the county, state, country and continent where you've made the most observations, and worldwide.
+          iNaturalist only reports the top 500 people on any leaderboard.
+        </p>
+        <div id="scopes" class="scopes"></div>
+      </section>
+
+      <section>
+        <h2>Lifers by tier</h2>
+        <div id="tiers" class="tiers"></div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Share card</h2>
+          <div class="actions">
+            <button id="copy-png" class="secondary">Copy image</button>
+            <button id="download-png">Download PNG</button>
+          </div>
+        </div>
+        <div id="card-frame" class="card-frame"><div id="card" class="card"></div></div>
+      </section>
+    </main>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

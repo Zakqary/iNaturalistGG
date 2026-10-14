@@ -6,8 +6,11 @@
 /** Pathname of a single observation page or link. */
 export const OBS_PATH_RE = /^\/observations\/(\d+)\/?$/;
 
-/** Where to put the lifer banner on an observation's own page, most specific first. */
-export const DETAIL_TITLE_SELECTORS = ['.ObservationTitle', '.obs-title', '#ObservationShow h1', 'h1'];
+/**
+ * On an observation's own page the banner goes directly after the first match:
+ * the row with the taxon name, so it sits under the title and above the photos.
+ */
+export const DETAIL_BANNER_AFTER_SELECTORS = ['.upper > .title_row', '.title_row', '.ObservationTitle'];
 
 /** Classes that mark a link as a photo thumbnail rather than a text link. */
 export const THUMBNAIL_HINT_RE = /photo|thumb|image|img/i;

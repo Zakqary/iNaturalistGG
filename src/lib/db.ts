@@ -1,28 +1,36 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { LiferRecord, Obs, Taxon, UserMeta } from './types';
+import type { LiferRecord, Obs, Place, StatsSnapshot, Taxon, UserMeta } from './types';
 
 interface GGSchema extends DBSchema {
   observations: { key: number; value: Obs; indexes: { byUser: number } };
   lifers: { key: number; value: LiferRecord; indexes: { byUser: number } };
   taxa: { key: number; value: Taxon };
   users: { key: number; value: UserMeta };
+  places: { key: number; value: Place };
+  stats: { key: number; value: StatsSnapshot };
 }
 
 let dbPromise: Promise<IDBPDatabase<GGSchema>> | null = null;
 
 export function db(): Promise<IDBPDatabase<GGSchema>> {
-  dbPromise ??= openDB<GGSchema>('inaturalistgg', 1, {
-    upgrade(d) {
-      d.createObjectStore('observations', { keyPath: 'id' }).createIndex('byUser', 'userId');
-      d.createObjectStore('lifers', { keyPath: 'obsId' }).createIndex('byUser', 'userId');
-      d.createObjectStore('taxa', { keyPath: 'id' });
-      d.createObjectStore('users', { keyPath: 'id' });
+  dbPromise ??= openDB<GGSchema>('inaturalistgg', 2, {
+    upgrade(d, oldVersion) {
+      if (oldVersion < 1) {
+        d.createObjectStore('observations', { keyPath: 'id' }).createIndex('byUser', 'userId');
+        d.createObjectStore('lifers', { keyPath: 'obsId' }).createIndex('byUser', 'userId');
+        d.createObjectStore('taxa', { keyPath: 'id' });
+        d.createObjectStore('users', { keyPath: 'id' });
+      }
+      if (oldVersion < 2) {
+        d.createObjectStore('places', { keyPath: 'id' });
+        d.createObjectStore('stats', { keyPath: 'userId' });
+      }
     },
   });
   return dbPromise;
 }
 
-export async function putMany<S extends 'observations' | 'taxa'>(
+export async function putMany<S extends 'observations' | 'taxa' | 'places'>(
   store: S,
   values: GGSchema[S]['value'][],
 ): Promise<void> {

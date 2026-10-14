@@ -8,13 +8,20 @@ Species · Genus · Family · Order · Class · Phylum+
 
 Hover a chip to see every group it unlocked. Observation pages also get a banner.
 
+**Stats page:** open it from the popup. It shows:
+- Your rank by species and by observations in your most-observed county, state, country and continent, and worldwide
+- Lifers broken down by tier
+- A 1200×630 share card you can download or copy as a PNG
+
+Two limits come from iNaturalist:
+- Leaderboards stop at 500, so ranks beyond that show as "500+".
+- The worldwide species leaderboard times out on iNat's side, so the worldwide species rank is estimated (≈) from the top 500 observers' profile species totals.
+
 **Planned:**
-- Stats page: rank by observations and species in your county, state, country, continent and worldwide
 - Worldwide top-3 badges for orders and above
 - Needs list
 - Completion bars
 - First-for-place ("Pioneer") detection
-- Shareable PNG stat card
 
 ## Development
 
