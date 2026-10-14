@@ -1,0 +1,108 @@
+/* All iNaturalistGG UI is prefixed igg- to stay clear of iNaturalist's own styles. */
+.igg-root {
+  --igg-common: #8a949e;
+  --igg-uncommon: #2fa84f;
+  --igg-rare: #2f7de1;
+  --igg-epic: #9b4de0;
+  --igg-epic-plus: #e07a1f;
+  --igg-legendary: #d9a400;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+}
+
+.igg-chip {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  color: #fff;
+  background: var(--igg-tier, var(--igg-common));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  cursor: help;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.igg-chip-overlay {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 5;
+}
+.igg-chip-inline {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.igg-tier-common { --igg-tier: var(--igg-common); }
+.igg-tier-uncommon { --igg-tier: var(--igg-uncommon); }
+.igg-tier-rare { --igg-tier: var(--igg-rare); }
+.igg-tier-epic { --igg-tier: var(--igg-epic); }
+.igg-tier-epic-plus { --igg-tier: var(--igg-epic-plus); }
+.igg-tier-legendary {
+  --igg-tier: var(--igg-legendary);
+}
+.igg-chip.igg-tier-legendary {
+  background: linear-gradient(135deg, #f5d142, #d9a400 55%, #f5d142);
+  color: #3a2a00;
+}
+
+.igg-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+  font-size: 13px;
+  color: inherit;
+}
+.igg-banner .igg-chip-inline { margin-left: 0; }
+.igg-banner-text { opacity: 0.85; }
+.igg-banner-floating {
+  position: fixed;
+  top: 70px;
+  right: 16px;
+  z-index: 10000;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+}
+
+.igg-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  max-width: 320px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #1d2125;
+  color: #f2f2f2;
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+.igg-tooltip[hidden] { display: none; }
+.igg-tooltip-heading {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.igg-tooltip-row {
+  display: flex;
+  gap: 8px;
+  border-left: 3px solid var(--igg-tier);
+  padding-left: 6px;
+  margin: 2px 0;
+}
+.igg-tooltip-rank {
+  min-width: 64px;
+  color: var(--igg-tier);
+  font-weight: 700;
+}
+.igg-tooltip-more {
+  margin-top: 4px;
+  opacity: 0.7;
+  font-style: italic;
+}

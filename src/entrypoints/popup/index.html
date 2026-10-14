@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iNaturalistGG</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <span class="logo">iNaturalist<b>GG</b></span>
+    </header>
+
+    <form id="user-form">
+      <label for="login">iNaturalist username</label>
+      <div class="row">
+        <input id="login" name="login" autocomplete="off" spellcheck="false" placeholder="e.g. kueda" required />
+        <button type="submit">Save</button>
+      </div>
+      <p id="user-error" class="error" hidden></p>
+    </form>
+
+    <section id="user-section" hidden>
+      <div class="profile">
+        <img id="avatar" alt="" />
+        <div>
+          <div id="display-name"></div>
+          <div id="counts" class="muted"></div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><span id="lifer-count">–</span><small>lifers</small></div>
+        <div class="stat"><span id="obs-count">–</span><small>synced obs</small></div>
+      </div>
+      <ul id="tiers"></ul>
+
+      <div id="status" class="muted"></div>
+      <progress id="progress" hidden></progress>
+
+      <div class="row">
+        <button id="sync">Sync now</button>
+        <button id="full-sync" class="secondary" title="Re-download everything, including catching deleted observations">Full resync</button>
+      </div>
+    </section>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
