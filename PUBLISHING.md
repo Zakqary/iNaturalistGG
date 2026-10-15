@@ -51,7 +51,7 @@ You also need a public URL for `PRIVACY.md`. The simplest option is to push this
    > The one `innerHTML` lint warning comes from the bundled `html-to-image` library (it copies `<textarea>` values while cloning a node for the PNG export); the extension's own code never sets innerHTML.
 5. Add a listing description, screenshots and the privacy policy link, then submit. Automated signing is quick; a human review can follow.
 
-**The add-on ID can never change.** It's `inaturalistgg@inaturalistgg.addon`, set in `wxt.config.ts`. AMO ties every future update to that ID, so don't edit it after the first upload.
+**The add-on ID can never change.** It's `inaturalistgg@zakqary`, set in `wxt.config.ts`. AMO ties every future update to that ID, so don't edit it after the first upload. **Never delete the add-on on AMO to start over.** AMO reserves a deleted add-on's ID forever, so you'd have to change the ID. If you need to fix something, upload a new version or edit the listing instead. If you forget the source code, you can add it to an existing version later under **Manage Status & Versions**.
 
 ## 4. Testing locally
 
