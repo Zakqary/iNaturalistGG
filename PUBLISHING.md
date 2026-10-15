@@ -46,12 +46,12 @@ You also need a public URL for `PRIVACY.md`. The simplest option is to push this
    - **On this site:** a public listing on AMO.
    - **On your own:** Mozilla signs the add-on and you distribute the file yourself. This is handy for testing with friends first.
 3. Upload `inaturalistgg-<version>-firefox.zip`.
-4. AMO asks whether the code is minified or bundled. Answer **yes**, upload `inaturalistgg-<version>-sources.zip`, and paste these reviewer notes:
+4. **Source code.** Right after the zip passes validation, the upload page asks whether you need to submit source code. Answer **yes** and upload `inaturalistgg-<version>-sources.zip`. If you miss it, finish the submission and then go to **My Add-ons → iNaturalistGG → Manage Status & Versions → (the version)**. Choose the file next to **Source code** at the bottom and click **Save changes**. Every version needs its own source zip. Paste these notes for reviewers:
    > Built with WXT (Vite). To reproduce: Node 20+, `npm ci`, `npm run zip:firefox`; output is in `.output/`.
    > The one `innerHTML` lint warning comes from the bundled `html-to-image` library (it copies `<textarea>` values while cloning a node for the PNG export); the extension's own code never sets innerHTML.
 5. Add a listing description, screenshots and the privacy policy link, then submit. Automated signing is quick; a human review can follow.
 
-**The add-on ID can never change.** It's `inaturalistgg@zakqary`, set in `wxt.config.ts`. AMO ties every future update to that ID, so don't edit it after the first upload. **Never delete the add-on on AMO to start over.** AMO reserves a deleted add-on's ID forever, so you'd have to change the ID. If you need to fix something, upload a new version or edit the listing instead. If you forget the source code, you can add it to an existing version later under **Manage Status & Versions**.
+**The add-on ID can never change.** It's `inaturalistgg@zakqary`, set in `wxt.config.ts`. AMO ties every future update to that ID, so don't edit it after the first upload. **Never delete the add-on on AMO to start over.** AMO reserves a deleted add-on's ID forever, so you'd have to change the ID. If you need to fix something, upload a new version or edit the listing instead.
 
 ## 4. Testing locally
 
